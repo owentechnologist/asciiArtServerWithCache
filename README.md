@@ -14,7 +14,8 @@ This is the most common way to use Redis as a cache. With this strategy, the app
 ### each choice will look like this:
 <code>['acorn']</code>
 
-### The user should use the text inside the single quotes to indicate their choice
+### The user should use the text inside the single quotes to indicate their choice eg: 
+<code> acorn </code>
 
 ### To run the program you execute:
 
