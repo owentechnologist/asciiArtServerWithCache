@@ -1,5 +1,11 @@
 ### This is a simple example written in python 
 ### It showcases Redis acting as a cache for a remote website that serves ascii art
+### This example uses the cache-aside pattern where the application is responsible for populating the cache with data ( the first time any selection is made, the underlying service will be invoked )
+
+<code>
+This is the most common way to use Redis as a cache. With this strategy, the application first looks into the cache to retrieve the data. If data is not found (cache miss),  the application then retrieves the data from the operational data store directly. Data is loaded to the cache only when necessary (hence: lazy-loading). Read-heavy applications can greatly benefit from implementing a cache-aside approach.
+</code>
+
 ## There are two areas you need to edit to get it to work as intended:
 ## line 10 (make sure you are using proper host and port)
 ## line 139 (uncomment the code here when you are ready to enable caching the individual ascii-art images)
