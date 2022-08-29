@@ -42,16 +42,20 @@ class DataHTMLParser(HTMLParser):
             self.should_process = False
 
 
+# interact with the user and get their ascii art choice response:
 def selectAsciiArtChoice(payload):
     input('\nPlease type an ascii art image label from this list: \n (hit enter when you are ready to see the list)')
     choice = input(f"\n\n {payload}\n\nType your choice from the list above (do not include quotes or []):")
     return choice
 
+# retrieve the content of a web page as a decoded (normal) string:
 def page_source_of_site_decoded(url):
     weburl = urllib.request.urlopen(url)
     code = weburl.read()
     return code.decode("utf8")
 
+# retrieve a list of ascii art choices from the website
+# use the DataHTMLParser class to return the results as a string
 def extractAsciiArtListFromCode(parser,code):
     asciiartData = parser.feed(code)
     return asciiartData
@@ -88,8 +92,11 @@ if __name__ == "__main__":
         clear_ascii_art_keys_from_redis(choices_key_name)
 
     print(f'\t*** ascii_art_cache in redis is empty?  {is_redis_empty_of_asciiart_choices_key(choices_key_name)}')
+
     #the fun and program execution timing begins:    
     start_time = time.time() 
+
+    # is the cache empty?
     if(is_redis_empty_of_asciiart_choices_key(choices_key_name)):
         time_to_check_redis_keys=time.time()-start_time
         extractAsciiArtListFromCode(parser,page_source_of_site_decoded("http://www.ascii-art.de/ascii"))
@@ -97,17 +104,20 @@ if __name__ == "__main__":
         temp_time_bucket = time.time()
         redis_proxy.set(choices_key_name,ascii_choices_string) # <-- this could be done asynchronously
         time_to_check_redis_keys = time_to_check_redis_keys+time.time()-temp_time_bucket
-    else: # <-- the choices key exists and we can get it from Redis:
+
+    else: # <-- the cache is not empty and we can get data from Redis:
         temp_time_bucket = time.time()
         ascii_choices_string = redis_proxy.get(choices_key_name)
         time_to_check_redis_keys = time_to_check_redis_keys + time.time()-temp_time_bucket
     
-    # slowest operation involves the user and all times are affected equally:
+    # Slowest operation involves the user choice interaction
+    # This has nothing to do with any cache or remote invocations 
+    # (so we deduct this time from our measurements):
     temp_time_bucket=time.time()
     user_choice = selectAsciiArtChoice(ascii_choices_string)    
     user_time=time.time()-temp_time_bucket
 
-    #formulate new url to fetch specific asciiart user selected:
+    # formulate new url to fetch specific asciiart user selected:
     newurl = 'http://www.ascii-art.de/ascii/ab/'+str(user_choice)+'.txt'
 
     # implement a check to see if: 
@@ -138,4 +148,3 @@ if __name__ == "__main__":
     print(f'\n\nTotal time taken in seconds by redis operations: {round(time_to_check_redis_keys, 9)}')
     print(f'Total time taken in seconds by non-redis operations: {round(time_measured_without_redis, 9)}')
     print(f'TOTAL PROGRAM EXECUTION TIME (without user time) == {time_measured_without_redis+time_to_check_redis_keys}')
-    
