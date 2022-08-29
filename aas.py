@@ -1,16 +1,15 @@
-#from msilib import type_string
-#from socketserver import DatagramRequestHandler
 import urllib.request
 from html.parser import HTMLParser
 import redis, time, sys
 
-# to implement caching with redis - make sure you have installed: 
+# to implement caching with redis - make sure you have redis-py installed: 
 # https://github.com/redis/redis-py
 # https://redis-py.readthedocs.io/en/stable/
 
 # TODO: fix the host and port to match your redis database endpoint:
 redis_proxy = redis.Redis(host='192.168.1.20', port=12000, decode_responses=True)
 
+# this is a utility class used to retrieve data from a simple html website:
 class DataHTMLParser(HTMLParser):
 
     def __init__(self):
@@ -48,7 +47,7 @@ def selectAsciiArtChoice(payload):
     choice = input(f"\n\n {payload}\n\nType your choice from the list above (do not include quotes or []):")
     return choice
 
-def code_of_site_decoded(url):
+def page_source_of_site_decoded(url):
     weburl = urllib.request.urlopen(url)
     code = weburl.read()
     return code.decode("utf8")
@@ -93,7 +92,7 @@ if __name__ == "__main__":
     start_time = time.time() 
     if(is_redis_empty_of_asciiart_choices_key(choices_key_name)):
         time_to_check_redis_keys=time.time()-start_time
-        extractAsciiArtListFromCode(parser,code_of_site_decoded("http://www.ascii-art.de/ascii"))
+        extractAsciiArtListFromCode(parser,page_source_of_site_decoded("http://www.ascii-art.de/ascii"))
         ascii_choices_string = parser.get_data_list()
         temp_time_bucket = time.time()
         redis_proxy.set(choices_key_name,ascii_choices_string) # <-- this could be done asynchronously
@@ -123,7 +122,7 @@ if __name__ == "__main__":
         asciiart = redis_proxy.get(newurl)
         time_to_check_redis_keys = time_to_check_redis_keys + time.time()-temp_time_bucket
     else:
-        asciiart = str(code_of_site_decoded(newurl)) 
+        asciiart = str(page_source_of_site_decoded(newurl)) 
         ## FIXME FIXME FIXME !! ##
         # create a new key in redis using the value of newurl as the keyname
         # and store the content of asciiart as the value for your new key 
