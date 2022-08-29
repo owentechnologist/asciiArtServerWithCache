@@ -127,7 +127,7 @@ if __name__ == "__main__":
         ## FIXME FIXME FIXME !! ##
         # create a new key in redis using the value of newurl as the keyname
         # and store the content of asciiart as the value for your new key 
-        redis_proxy.set(newurl,asciiart) # <-- uncomment this for solution
+        # redis_proxy.set(newurl,asciiart) # <-- uncomment this for solution
     try:
         print(f'\n\n'+asciiart)
     except:
