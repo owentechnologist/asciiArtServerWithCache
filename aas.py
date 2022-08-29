@@ -131,7 +131,7 @@ if __name__ == "__main__":
     
     time_measured_without_redis = time_measured_without_redis + time.time()-(start_time+time_to_check_redis_keys+user_time)
     
-    print('\n\nNB: ***\nThe following time measurements both *exclude* the time spent by the user when selecting asciiart')
+    print('\n\nNB: ***\nThe following time measurements both *exclude* the time spent by the user:')
     print(f'\n\nTotal time taken in seconds by redis operations: {round(time_to_check_redis_keys, 9)}')
     print(f'Total time taken in seconds by non-redis operations: {round(time_measured_without_redis, 9)}')
     print(f'TOTAL PROGRAM EXECUTION TIME (without user time) == {time_measured_without_redis+time_to_check_redis_keys}')
