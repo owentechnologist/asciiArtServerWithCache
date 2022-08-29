@@ -12,7 +12,7 @@ python3 aas.py
 ### https://github.com/redis/redis-py
 ### https://redis-py.readthedocs.io/en/stable/
 
-## You can start the program and clear the main key cached in Redis by adding an additional argument:
+## You can start the program with no cached data in Redis by adding an additional argument:
 
 <code>
 python3 aas.py clean
@@ -49,4 +49,6 @@ Total time taken in seconds by non-redis operations: 0.002849102
 TOTAL PROGRAM EXECUTION TIME (without user time) == 0.016040802001953125
 </code>
 
-## You should see that using the Cache-aside pattern in this way makes your client experience better - it will scale much better if you add additional clients as well as they will all share the same cached values.
+## You should see that using the Cache-aside pattern makes your client experience better 
+## The application will also scale much better if you add additional clients -- as they will all share the same cached values.
+## The ascii art website will be happier too :) 
