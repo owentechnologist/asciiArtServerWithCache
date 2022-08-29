@@ -1,4 +1,5 @@
-from socketserver import DatagramRequestHandler
+#from msilib import type_string
+#from socketserver import DatagramRequestHandler
 import urllib.request
 from html.parser import HTMLParser
 import redis, time, sys
@@ -64,10 +65,12 @@ def is_redis_empty_of_asciiart_choices_key(choices_key_name):
         result=True
     return result
 
-# remove the key in Redis that holds the list of choices for ascii art: 
+# remove the keys in Redis that cache the list of choices and ascii art: 
 def clear_redis__choices_cache(choices_key_name):
-    redis_proxy.delete(choices_key_name)
-
+    redis_proxy.unlink(choices_key_name)
+    for i in redis_proxy.scan_iter(match='http://www.ascii-art.de*',count=50000):
+        redis_proxy.unlink(i)
+        print(f'unlinked key: {i}')
 
 # variables for our use:
 choices_key_name = 'asciiart_choices'
