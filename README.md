@@ -25,7 +25,7 @@ python3 aas.py
 
 ### ^^ assumes you have redis-py installed
 
-## to implement caching with redis - make sure you have this python library installed: 
+## To use redis in your python code - make sure you have this python library installed: 
 ### https://github.com/redis/redis-py
 ### https://redis-py.readthedocs.io/en/stable/
 
