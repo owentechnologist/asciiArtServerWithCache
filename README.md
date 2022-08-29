@@ -1,6 +1,6 @@
 ### This is a simple example written in python 
 ### It showcases Redis acting as a cache for a remote website that serves ascii art
-## There are two areas you need to edit to get it work fully:
+## There are two areas you need to edit to get it to work as intended:
 ## line 10 (make sure you are using proper host and port)
 ## line 139 (uncomment the code here to enable caching the individual ascii-art images)
 
