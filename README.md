@@ -4,7 +4,13 @@
 ## line 10 (make sure you are using proper host and port)
 ## line 139 (uncomment the code here to enable caching the individual ascii-art images)
 
-### To run it you can execute:
+### the user will be presented with a busy printout of many ascii art choices
+### each choice will look like this:
+<code>['acorn']</code>
+
+### The user should use the text inside the single quotes to indicate their choice
+
+### To run the program you execute:
 
 <code>
 python3 aas.py
