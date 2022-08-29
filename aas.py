@@ -66,12 +66,12 @@ def is_redis_empty_of_asciiart_choices_key(choices_key_name):
     return result
 
 # remove the keys in Redis that cache the list of choices and ascii art: 
-def clear_redis__choices_cache(choices_key_name):
+def clear_ascii_art_keys_from_redis(choices_key_name):
     redis_proxy.unlink(choices_key_name)
-    print(f'unlinked key: {choices_key_name}')
-    for i in redis_proxy.scan_iter(match='http://www.ascii-art.de*',count=50000):
+    print(f'\nUnlinked key: {choices_key_name}')
+    for i in redis_proxy.scan_iter(match='http://www.ascii-art.de*',count=10000):
         redis_proxy.unlink(i)
-        print(f'unlinked key: {i}')
+        print(f'Unlinked key: {i}')
 
 # variables for our use:
 choices_key_name = 'asciiart_choices'
@@ -86,9 +86,9 @@ user_time = 0 # <-- used to measure the time a user spends choosing an ascii art
 if __name__ == "__main__":
     if len(sys.argv)>1:
         #assume the extra arg means the user wanted to clear the redis cache
-        clear_redis__choices_cache(choices_key_name)
+        clear_ascii_art_keys_from_redis(choices_key_name)
 
-    print(f'redis does *not* have the choices key? {is_redis_empty_of_asciiart_choices_key(choices_key_name)}')
+    print(f'\t*** ascii_art_cache in redis is empty?  {is_redis_empty_of_asciiart_choices_key(choices_key_name)}')
     #the fun and program execution timing begins:    
     start_time = time.time() 
     if(is_redis_empty_of_asciiart_choices_key(choices_key_name)):
@@ -127,7 +127,7 @@ if __name__ == "__main__":
         ## FIXME FIXME FIXME !! ##
         # create a new key in redis using the value of newurl as the keyname
         # and store the content of asciiart as the value for your new key 
-        # redis_proxy.set(newurl,asciiart) # <--solution
+        redis_proxy.set(newurl,asciiart) # <-- uncomment this for solution
     try:
         print(f'\n\n'+asciiart)
     except:
