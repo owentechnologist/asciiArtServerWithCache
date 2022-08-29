@@ -68,6 +68,7 @@ def is_redis_empty_of_asciiart_choices_key(choices_key_name):
 # remove the keys in Redis that cache the list of choices and ascii art: 
 def clear_redis__choices_cache(choices_key_name):
     redis_proxy.unlink(choices_key_name)
+    print(f'unlinked key: {choices_key_name}')
     for i in redis_proxy.scan_iter(match='http://www.ascii-art.de*',count=50000):
         redis_proxy.unlink(i)
         print(f'unlinked key: {i}')
