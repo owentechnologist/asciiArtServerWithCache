@@ -138,7 +138,7 @@ if __name__ == "__main__":
     else:
         asciiart = str(code_of_site_decoded(newurl)) 
         ## FIXME FIXME FIXME !! ##
-        # TODO: create a new key in redis using the value of newurl as the keyname
+        # create a new key in redis using the value of newurl as the keyname
         # and store the content of asciiart as the value for your new key 
         # redis_proxy.set(newurl,asciiart) # <--solution
     try:
