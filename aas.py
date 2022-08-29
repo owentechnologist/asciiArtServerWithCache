@@ -12,49 +12,35 @@ redis_proxy = redis.Redis(host='192.168.1.20', port=12000, decode_responses=True
 
 class DataHTMLParser(HTMLParser):
 
+    def __init__(self):
+        super(). __init__()
+        self.choices_list = list()
+        self.should_process = False
+
     def get_data_list(self):
-        global choices_list
-        print(f'choices_list length == {len(choices_list)}')
+        print(f'choices_list length == {len(self.choices_list)}')
         string_data_list = ''
-        for i in choices_list:
+        for i in self.choices_list:
             string_data_list=string_data_list+' '+str(i)
         return string_data_list
 
     def handle_data(self, data: str) -> None:
-        global shouldProcess
-        if(shouldProcess):
-            global choices_list
+        if(self.should_process):
             if(bool(data.splitlines()[0].strip())):
                 if(bool(data.splitlines()[0].strip(' . '))):
-                    choices_list.append(data.splitlines())
+                    self.choices_list.append(data.splitlines())
     
     def handle_starttag(self, tag, attrs):
-        global shouldProcess
-
         if(tag.startswith('a')):
             for i in attrs:
                 x = str(i)
                 y = x.split('.')
                 if(len(y))>1:
                     if((y[1])[0] == ('t')):
-                        shouldProcess = True
+                        self.should_process = True
         else:
-            shouldProcess = False
+            self.should_process = False
 
-    def handle_endtag(self, tag):
-        pass
-
-    def handle_comment(self, data):
-        pass
-
-    def handle_entityref(self, name):
-        pass
-
-    def handle_charref(self, name):
-        pass
-
-    def handle_decl(self, data):
-        pass
 
 def selectAsciiArtChoice(payload):
     input('\nPlease type an ascii art image label from this list: \n (hit enter when you are ready to see the list)')
@@ -68,57 +54,54 @@ def code_of_site_decoded(url):
 
 def extractAsciiArtListFromCode(parser,code):
     asciiartData = parser.feed(code)
-    #print(asciiartData)
     return asciiartData
 
 # Check if the asciiart choices key has been stored in Redis: 
-def is_redis_empty_of_asciiart_choices_key():
-    global choices_key_name
+def is_redis_empty_of_asciiart_choices_key(choices_key_name):
     test=redis_proxy.exists(choices_key_name)
     result = False
     if(test==0):
         result=True
     return result
-    
-def clear_redis__choices_cache():
+
+# remove the key in Redis that holds the list of choices for ascii art: 
+def clear_redis__choices_cache(choices_key_name):
     redis_proxy.delete(choices_key_name)
+
 
 # variables for our use:
 choices_key_name = 'asciiart_choices'
-choices_list = list()
 asciiart = '' # <-- placeholder for the asciiart to be displayed
-parser = DataHTMLParser() # custom class in this file
-shouldProcess = False
-choices_string = '' # <-- placeholder for our choices string
+parser = DataHTMLParser() # <-- custom class in this file that parses specific webpage content
+ascii_choices_string = '' # <-- placeholder for our choices string
 time_to_check_redis_keys = 0 # <-- placeholder for measuring app-to-redis latency
 time_measured_without_redis = 0 # <-- placeholder for measuring non-redis workflow latency
-temp_time_bucket = 0 # <-- in case we need to subtract time taken by one path
-user_time = 0
+temp_time_bucket = 0 # <-- used to calculate timing for isolated events
+user_time = 0 # <-- used to measure the time a user spends choosing an ascii art image name
 
 if __name__ == "__main__":
     if len(sys.argv)>1:
         #assume the extra arg means the user wanted to clear the redis cache
-        clear_redis__choices_cache()
+        clear_redis__choices_cache(choices_key_name)
 
-    
-    print(f'redis does *not* have the choices key? {is_redis_empty_of_asciiart_choices_key()}')
-    #the fun begins:    
+    print(f'redis does *not* have the choices key? {is_redis_empty_of_asciiart_choices_key(choices_key_name)}')
+    #the fun and program execution timing begins:    
     start_time = time.time() 
-    if(is_redis_empty_of_asciiart_choices_key()):
+    if(is_redis_empty_of_asciiart_choices_key(choices_key_name)):
         time_to_check_redis_keys=time.time()-start_time
         extractAsciiArtListFromCode(parser,code_of_site_decoded("http://www.ascii-art.de/ascii"))
-        choices_string = parser.get_data_list()
+        ascii_choices_string = parser.get_data_list()
         temp_time_bucket = time.time()
-        redis_proxy.set(choices_key_name,choices_string) # <-- this could be done asynchronously
+        redis_proxy.set(choices_key_name,ascii_choices_string) # <-- this could be done asynchronously
         time_to_check_redis_keys = time_to_check_redis_keys+time.time()-temp_time_bucket
     else: # <-- the choices key exists and we can get it from Redis:
         temp_time_bucket = time.time()
-        choices_string = redis_proxy.get(choices_key_name)
+        ascii_choices_string = redis_proxy.get(choices_key_name)
         time_to_check_redis_keys = time_to_check_redis_keys + time.time()-temp_time_bucket
     
     # slowest operation involves the user and all times are affected equally:
     temp_time_bucket=time.time()
-    user_choice = selectAsciiArtChoice(choices_string)    
+    user_choice = selectAsciiArtChoice(ascii_choices_string)    
     user_time=time.time()-temp_time_bucket
 
     #formulate new url to fetch specific asciiart user selected:
