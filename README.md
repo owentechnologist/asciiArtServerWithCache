@@ -22,7 +22,7 @@ python3 aas.py
 ### https://github.com/redis/redis-py
 ### https://redis-py.readthedocs.io/en/stable/
 
-## You can start the program with no cached data in Redis by adding an additional argument:
+## You can start the program with no ascii art cached data in Redis by adding an additional argument:
 
 <code>
 python3 aas.py clean
@@ -39,7 +39,7 @@ Total time taken in seconds by non-redis operations: 1.080892801
 TOTAL PROGRAM EXECUTION TIME (without user time) == 1.0902099609375
 </code>
 
-### Then, the main key that lists the options will be in redis and you will see results like this:
+### If you run it again: the ascii art options will have been cached in redis and you will see results like this:
 
 <code>
 Total time taken in seconds by redis operations: 0.006021738
@@ -49,7 +49,7 @@ Total time taken in seconds by non-redis operations: 0.30087924
 TOTAL PROGRAM EXECUTION TIME (without user time) == 0.3069009780883789
 </code>
 
-### If you then implement the caching of the individual ascii art payloads you will see results like this:
+### If you then implement the caching of the individual ascii art payloads (uncomment line 139) and you load the same ascii art choice more than once you will see even faster results:
 
 <code>
 Total time taken in seconds by redis operations: 0.0131917
