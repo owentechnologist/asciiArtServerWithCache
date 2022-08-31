@@ -30,7 +30,7 @@ python3 aas.py
 ### https://redis-py.readthedocs.io/en/stable/
 
 ```
-pip install redis[hiredis]
+pip3 install redis[hiredis]
 ```
 
 ## You can start the program with no ascii art cached data in Redis by adding an additional argument:
