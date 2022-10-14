@@ -1,13 +1,28 @@
 import urllib.request
 from html.parser import HTMLParser
-import redis, time, sys
+import redis, time, sys, os
 
 # to implement caching with redis - make sure you have redis-py installed: 
 # https://github.com/redis/redis-py
 # https://redis-py.readthedocs.io/en/stable/
 
 # TODO: fix the host and port to match your redis database endpoint:
-redis_proxy = redis.Redis(host='192.168.1.20', port=12000, decode_responses=True)
+
+redishost = 'redis-10000.homelab.local'
+redispassword = '' #FIXME (if you are not using default user with no password)
+redisport = 10000
+redisuser = 'default'  #FIXME (if you are not using default user with no password)
+
+# if not using TLS:
+redis_proxy = redis.StrictRedis(redishost,redisport,password=redispassword, charset="utf-8", decode_responses=True)
+
+# if using TLS: #FIXME (match below settings to your environment)
+CERT_DIR = '/tmp/certs' 
+SERVER_CERT = os.path.join(CERT_DIR,"redis-client-cert.pem")
+SERVER_KEY = os.path.join(CERT_DIR,"redis-client-key.pem")
+CACERTS = os.path.join(CERT_DIR, "ca.pem")
+#redis_proxy = redis.StrictRedis(redishost,redisport, username=redisuser,password=redispassword, charset="utf-8", decode_responses=True, ssl=True,ssl_certfile=SERVER_CERT,ssl_keyfile=SERVER_KEY,ssl_ca_certs=CACERTS)
+
 
 # this is a utility class used to retrieve data from a simple html website:
 class DataHTMLParser(HTMLParser):
@@ -71,7 +86,7 @@ def is_redis_empty_of_asciiart_choices_key(choices_key_name):
 # remove the keys in Redis that cache the list of choices and ascii art: 
 def clear_ascii_art_keys_from_redis(choices_key_name):
     redis_proxy.unlink(choices_key_name)
-    print(f'\nUnlinked key: {choices_key_name}')
+    print(f'\nUnlinking key (this can take a while with a large DB): {choices_key_name}')
     for i in redis_proxy.scan_iter(match='http://www.ascii-art.de*',count=10000):
         redis_proxy.unlink(i)
         print(f'Unlinked key: {i}')
