@@ -7,8 +7,8 @@ This is the most common way to use Redis as a cache. With this strategy, the app
 </code>
 
 ## There are two areas you need to edit to get it to work as intended:
-## line 10 (make sure you are using proper host and port)
-## line 139 (uncomment the code here when you are ready to enable caching the individual ascii-art images)
+## line 14 and 17 (make sure you are using proper host and port)
+## line 158 (uncomment the code here when you are ready to enable caching the individual ascii-art images)
 
 ### the user will be presented with a busy printout of many ascii art choices
 ### each choice will look like this:
