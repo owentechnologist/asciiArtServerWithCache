@@ -2,14 +2,18 @@ import urllib.request
 from html.parser import HTMLParser
 import redis, time, sys, os
 
-# to implement caching with redis - make sure you have redis-py installed: 
+# to implement caching with redis 
+# - make sure you have redis-py installed: 
+# pip3 install redis[hiredis]
 # https://github.com/redis/redis-py
 # https://redis-py.readthedocs.io/en/stable/
 
 # TODO: fix the host and port to match your redis database endpoint:
 
+#redishost = 'redis-10000.homelab.local'
 redishost = 'redis-10000.homelab.local'
-redispassword = '' #FIXME (if you are not using default user with no password)
+redispassword = ''
+#redispassword = '' #FIXME (if you are not using default user with no password)
 redisport = 10000
 redisuser = 'default'  #FIXME (if you are not using default user with no password)
 
@@ -108,7 +112,7 @@ if __name__ == "__main__":
 
     print(f'\t*** ascii_art_cache in redis is empty?  {is_redis_empty_of_asciiart_choices_key(choices_key_name)}')
 
-    #the fun and program execution timing begins:    
+    #the fun (and program execution timing) begins:    
     start_time = time.time() 
 
     # is the cache empty?
