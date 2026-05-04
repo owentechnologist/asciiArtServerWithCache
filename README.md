@@ -29,9 +29,26 @@ python3 aas.py
 ### https://github.com/redis/redis-py
 ### https://redis-py.readthedocs.io/en/stable/
 
+## This library is specified in the requirements.txt file initialize a runtime as follows:
+
+1. initialize the python virtual environment specific to this project:
+``` 
+python3 -m venv qp_env
+``` 
+
+2. activate the python environment:  [This step is repeated anytime you want this qp environment back]
+
+``` 
+source qp_env/bin/activate
+``` 
+
+3. Install the libraries: [only necesary to do this one time per environment]
+
 ```
-pip3 install redis[hiredis]
+pip3 install -r requirements.txt
 ```
+
+# IMPORTANT!  Edit lines 14-18 as needed to configure connecting to your Redis instance
 
 ## You can start the program with no ascii art cached data in Redis by adding an additional argument:
 
@@ -50,9 +67,11 @@ Total time taken in seconds by non-redis operations: 1.080892801
 TOTAL PROGRAM EXECUTION TIME (without user time) == 1.0902099609375
 </code>
 
-### If you run it again: the ascii art options will have been cached in redis and you will see results like this:
+### If you run it again [do not include the 'clean' option]: the ascii art options will have been cached in redis and you will see results like this (assumes you choose a different ASCII ART object):
 
 <code>
+python3 aas.py
+
 Total time taken in seconds by redis operations: 0.006021738
 
 Total time taken in seconds by non-redis operations: 0.30087924
@@ -60,9 +79,11 @@ Total time taken in seconds by non-redis operations: 0.30087924
 TOTAL PROGRAM EXECUTION TIME (without user time) == 0.3069009780883789
 </code>
 
-### If you then implement the caching of the individual ascii art payloads (uncomment line 139) and you load the same ascii art choice more than once you will see even faster results:
+### Notice the implementation of the caching of the individual ascii art payloads (around line 158) if you load the same ascii art choice more than once, you will see even faster (fully cached) results:
 
 <code>
+python3 aas.py
+
 Total time taken in seconds by redis operations: 0.0131917
 
 Total time taken in seconds by non-redis operations: 0.002849102

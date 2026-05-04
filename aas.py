@@ -11,14 +11,14 @@ import redis, time, sys, os
 # TODO: fix the host and port to match your redis database endpoint:
 
 #redishost = 'redis-10000.homelab.local'
-redishost = 'redis-10000.homelab.local'
+redishost = 'localhost'
 redispassword = ''
 #redispassword = '' #FIXME (if you are not using default user with no password)
-redisport = 10000
+redisport = 6379
 redisuser = 'default'  #FIXME (if you are not using default user with no password)
 
 # if not using TLS:
-redis_proxy = redis.StrictRedis(redishost,redisport,password=redispassword, charset="utf-8", decode_responses=True)
+redis_proxy = redis.StrictRedis(redishost,redisport,password=redispassword, encoding="utf-8", decode_responses=True)
 
 # if using TLS: #FIXME (match below settings to your environment)
 CERT_DIR = '/tmp/certs' 
@@ -152,10 +152,10 @@ if __name__ == "__main__":
         time_to_check_redis_keys = time_to_check_redis_keys + time.time()-temp_time_bucket
     else:
         asciiart = str(page_source_of_site_decoded(newurl)) 
-        ## FIXME FIXME FIXME !! ##
+        ## CACHE-ASIDE POWER SHOWN BELOW !! ##
         # create a new key in redis using the value of newurl as the keyname
         # and store the content of asciiart as the value for your new key 
-        # redis_proxy.set(newurl,asciiart) # <-- uncomment this for solution
+        redis_proxy.set(newurl,asciiart) # <--  such a simple solution (you may want to add TTL)
     try:
         print(f'\n\n'+asciiart)
     except:
