@@ -36,11 +36,7 @@ python aas.py --host localhost --port 10000 --password mypassowrd --use-tls True
 
 ### ^^ assumes you have redis-py installed
 
-## To use the redis API in your python code - make sure you have this python library installed: 
-### https://github.com/redis/redis-py
-### https://redis-py.readthedocs.io/en/stable/
-
-## This library is specified in the requirements.txt file initialize a runtime as follows:
+## SETUP
 
 1. initialize the python virtual environment specific to this project:
 ``` 
@@ -59,6 +55,7 @@ source qp_env/bin/activate
 pip3 install -r requirements.txt
 ```
 
+# Further Instructions / Options
 ## You can start the program with no ascii art cached data in Redis by adding an additional argument:
 
 <code>
@@ -98,6 +95,8 @@ Total time taken in seconds by cache operations: 0.0131917
 Total time taken in seconds by non-cache operations: 0.002849102
 TOTAL PROGRAM EXECUTION TIME (without user time) == 0.016040802001953125
 ```
+
+# Final Thoughts:
 
 ## You should see that using the Cache-aside pattern makes your client experience better 
 ## The application will also scale much better if you add additional clients -- as they will all share the same cached values.
