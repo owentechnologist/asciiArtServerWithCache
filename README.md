@@ -20,12 +20,17 @@ This is the most common way to use Redis as a cache. With this strategy, the app
 ### To run the program you execute:
 
 <code>
-python3 aas.py
+python aas.py --host localhost --port 10000 
+</code>
+
+### To run the program using TLS you can execute: (note currently this program does not expect CA certs on the client machine)
+<code>
+python aas.py --host localhost --port 10000 --password mypassowrd --use-tls True --ssl-cert-reqs none
 </code>
 
 ### ^^ assumes you have redis-py installed
 
-## To use redis in your python code - make sure you have this python library installed: 
+## To use the redis API in your python code - make sure you have this python library installed: 
 ### https://github.com/redis/redis-py
 ### https://redis-py.readthedocs.io/en/stable/
 
@@ -53,41 +58,34 @@ pip3 install -r requirements.txt
 ## You can start the program with no ascii art cached data in Redis by adding an additional argument:
 
 <code>
-python3 aas.py clean
+python aas.py --host localhost --port 10000 --clear True 
 </code>
 
 
 ### The first time the program is run you will see results like this:
 
 <code>
-Total time taken in seconds by redis operations: 0.00931716
-
-Total time taken in seconds by non-redis operations: 1.080892801
-
+Total time taken in seconds by cache operations: 0.00931716
+Total time taken in seconds by non-cache operations: 1.080892801
 TOTAL PROGRAM EXECUTION TIME (without user time) == 1.0902099609375
 </code>
 
-### If you run it again [do not include the 'clean' option]: the ascii art options will have been cached in redis and you will see results like this (assumes you choose a different ASCII ART object):
+### If you run it again [do not include the '--clear True' option]: the ascii art options will have been cached in redis and you will see results like this (assumes you choose a different ASCII ART object):
 
 <code>
 python3 aas.py
 
-Total time taken in seconds by redis operations: 0.006021738
-
-Total time taken in seconds by non-redis operations: 0.30087924
-
+Total time taken in seconds by cache operations: 0.006021738
+Total time taken in seconds by non-cache operations: 0.30087924
 TOTAL PROGRAM EXECUTION TIME (without user time) == 0.3069009780883789
 </code>
 
-### Notice the implementation of the caching of the individual ascii art payloads (around line 158) if you load the same ascii art choice more than once, you will see even faster (fully cached) results:
+### Notice the implementation of the caching of the individual ascii art payloads if you load the same ascii art choice more than once, you will see even faster (fully cached) results:
 
 <code>
 python3 aas.py
-
-Total time taken in seconds by redis operations: 0.0131917
-
-Total time taken in seconds by non-redis operations: 0.002849102
-
+Total time taken in seconds by cache operations: 0.0131917
+Total time taken in seconds by non-cache operations: 0.002849102
 TOTAL PROGRAM EXECUTION TIME (without user time) == 0.016040802001953125
 </code>
 
